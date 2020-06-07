@@ -70,7 +70,6 @@
   var photos = [];
 
   var numberOfComments = window.util.getRandomInteger(1, 20);
-  var comments = [];
 
   for (var index = 0; index < numberOfComments; index++) {
     var item = {
@@ -92,5 +91,20 @@
     photos.push(item);
   }
 
-  console.log(photos);
+  var fragment = document.createDocumentFragment();
+  var template = document.querySelector('#picture').content.querySelector('.picture');
+  var img = template.querySelector('.picture__img');
+  var pictures = document.querySelector('.pictures');
+
+  photos.forEach(function (photo) {
+    img.src = photo.url;
+    var comments = template.querySelector('.picture__comments');
+    comments.textContent = photo.comments.length;
+    var likes = template.querySelector('.picture__likes');
+    likes.textContent = photo.likes;
+
+    fragment.appendChild(template.cloneNode(true));
+  });
+
+  pictures.appendChild(fragment);
 })();
