@@ -2,7 +2,7 @@
 
 (function () {
   var NUMBER_OF_ARRAY_ITEMS = 25;
-  var MESSAGES = [
+  var commentMessages = [
     'Всё отлично!',
     'В целом всё неплохо.Но не всё.',
     'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.В конце концов это просто непрофессионально.',
@@ -10,7 +10,7 @@
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
     'Лица у людей на фотке перекошены, как будто их избивают.Как можно было поймать такой неудачный момент ? !'
   ];
-  var NAMES = [
+  var commentNames = [
     'Артем',
     'Вероника',
     'Никодим',
@@ -19,11 +19,11 @@
     'Ульяна',
   ];
 
-  var PICTURES = document.querySelector('.pictures');
-  var TEMPLATE = document.querySelector('#picture').content.querySelector('.picture');
-  var TEMPLATE_IMAGE = TEMPLATE.querySelector('.picture__img');
-  var TEMPLATE_COMMENTS = TEMPLATE.querySelector('.picture__comments');
-  var TEMPLATE_LIKES = TEMPLATE.querySelector('.picture__likes');
+  var picturesContainer = document.querySelector('.pictures');
+  var photoTemplate = document.querySelector('#picture').content.children[0];
+  var photoImage = photoTemplate.querySelector('.picture__img');
+  var photoCommentsCount = photoTemplate.querySelector('.picture__comments');
+  var photoLikesCount = photoTemplate.querySelector('.picture__likes');
 
   var generateUniqueArrayOfInteger = function (numberOfItems, minimum, maximum) {
     var arrayOfIntegers = [];
@@ -42,20 +42,20 @@
     return arrayOfIntegers;
   };
 
-  var getCommentMessage = function () {
+  var generateCommentMessage = function () {
     var numberOfMessages = window.util.getRandomInteger(1, 2);
     var textMesssge = '';
 
     for (var index = 0; index < numberOfMessages; index++) {
-      textMesssge += MESSAGES[
-        window.util.getRandomInteger(0, MESSAGES.length - 1)
+      textMesssge += commentMessages[
+        window.util.getRandomInteger(0, commentMessages.length - 1)
       ] + ' ';
     }
 
     return textMesssge;
   };
 
-  var getPhotoComments = function () {
+  var generatePhotoComments = function () {
     var photoComments = [];
     var numberOfComments = window.util.getRandomInteger(1, 6);
 
@@ -63,8 +63,8 @@
       photoComments.push(
           {
             avatar: 'img/avatar-' + window.util.getRandomInteger(1, 6) + '.svg',
-            message: getCommentMessage(),
-            name: NAMES[window.util.getRandomInteger(0, NAMES.length - 1)]
+            message: generateCommentMessage(),
+            name: commentNames[window.util.getRandomInteger(0, commentNames.length - 1)]
           }
       );
     }
@@ -72,15 +72,15 @@
     return photoComments;
   };
 
-  var generatePhotosData = function () {
+  var generatePhotosData = function (photosID) {
     var photos = [];
 
     for (var index = 0; index < NUMBER_OF_ARRAY_ITEMS; index++) {
       var item = {
-        url: 'photos/' + photoID[index] + '.jpg',
+        url: 'photos/' + photosID[index] + '.jpg',
         description: 'Случайная фотография',
         likes: window.util.getRandomInteger(15, 200),
-        comments: getPhotoComments(),
+        comments: generatePhotoComments(),
       };
       photos.push(item);
     }
@@ -92,17 +92,17 @@
     var fragment = document.createDocumentFragment();
 
     photos.forEach(function (photo) {
-      TEMPLATE_IMAGE.src = photo.url;
-      TEMPLATE_COMMENTS.textContent = photo.comments.length;
-      TEMPLATE_LIKES.textContent = photo.likes;
-      fragment.appendChild(TEMPLATE.cloneNode(true));
+      photoImage.src = photo.url;
+      photoCommentsCount.textContent = photo.comments.length;
+      photoLikesCount.textContent = photo.likes;
+      fragment.appendChild(photoTemplate.cloneNode(true));
     });
 
-    PICTURES.appendChild(fragment);
+    picturesContainer.appendChild(fragment);
   };
 
-  var photoID = generateUniqueArrayOfInteger(NUMBER_OF_ARRAY_ITEMS, 1, 25);
+  var photosID = generateUniqueArrayOfInteger(NUMBER_OF_ARRAY_ITEMS, 1, 25);
 
-  var photos = generatePhotosData();
+  var photos = generatePhotosData(photosID);
   renderPhotos(photos);
 })();
